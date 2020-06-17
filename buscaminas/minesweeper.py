@@ -1,5 +1,6 @@
 from .board import MSBoard
 from .cell import UncoveredMineException
+from . import cellcode
 
 
 class GameOverException(Exception):
@@ -30,20 +31,27 @@ class Minesweeper():
 
     def _getCellCode(self, cell):
         if cell.hasFlag:
-            return 'F'
+            return cellcode.FLAG
         if cell.hasQuestionMark:
-            return '?'
+            return cellcode.QUESTION
         if cell.isCovered:
-            return '.'
+            return cellcode.COVERED
         if cell.hasMine:
-            return '*'
-        return cell.count if cell.count > 0 else ' '
+            return cellcode.MINE
+        return cellcode.count(cell.count)
 
     def uncover(self, x, y):
         """ uncover a cell """
         cell = self._board.cell(x, y)
+        if not cell.isCovered:
+            return
+
         try:
             cell.uncover()
         except UncoveredMineException:
             self._isOver = True
             raise GameOverException()
+
+        if cell.count == 0:
+            for nx, ny in self._board.neighborCells(x, y):
+                self.uncover(nx, ny)

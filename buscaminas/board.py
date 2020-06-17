@@ -53,9 +53,11 @@ class MSBoard():
         self._incrementAround(x, y)
 
     def _incrementAround(self, x, y):
-        for px in range(max(0, x-1), x+2):
-            for py in range(max(0, y-1), y+2):
-                try:
-                    self.cell(px, py).increment()
-                except IndexError:
-                    pass
+        for px, py in self.neighborCells(x, y):
+            self.cell(px, py).increment()
+
+    def neighborCells(self, x, y):
+        for px in range(max(0, x-1), min(x+2, self.xsize)):
+            for py in range(max(0, y-1), min(y+2, self.ysize)):
+                if px != x or py != y:
+                    yield (px, py)

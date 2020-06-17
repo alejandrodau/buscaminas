@@ -1,6 +1,6 @@
 import pytest
+import itertools
 from buscaminas import MSBoard, MSCell, CellAlreadyHasMineException
-
 
 xsize = 5
 ysize = 10
@@ -20,11 +20,12 @@ def test_newBoard(board):
 
 
 def test_mineLocations(board):
-    mineCount = 0
-    for column in board.grid:
-        for cell in column:
-            mineCount += 1 if cell.hasMine else 0
-    assert mineCount == mines
+    assert countMines(board.grid) == mines
+
+
+def countMines(grid):
+    return sum(1 for cell in itertools.chain.from_iterable(grid)
+               if cell.hasMine)
 
 
 def test_getGrid(board):
@@ -61,3 +62,19 @@ def test_addMine():
     assert board.cell(xsize-2, ysize-1).count == 1
     assert board.cell(xsize-1, ysize-2).count == 1
     assert board.cell(xsize-2, ysize-2).count == 1
+
+
+def test_crowdedBoard():
+    mines = xsize * ysize - 1
+    board = MSBoard(xsize=xsize, ysize=ysize, mines=mines)
+    assert countMines(board.grid) == mines
+    with pytest.raises(ValueError):
+        board = MSBoard(xsize=xsize, ysize=ysize, mines=(xsize*ysize))
+
+
+def test_neighborCells(board):
+    assert set(board.neighborCells(0, 0)) == {(0, 1), (1, 0), (1, 1)}
+    maxx = xsize-1
+    maxy = ysize-1
+    assert set(board.neighborCells(maxx, maxy)) == {
+              (maxx, maxy-1), (maxx-1, maxy-1), (maxx-1, maxy)}
