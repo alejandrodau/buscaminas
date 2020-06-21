@@ -16,7 +16,7 @@ class GameOverException(Exception):
     pass
 
 
-class Minesweeper():
+class Buscaminas():
     """ Minesweeper game class """
     def __init__(self, xsize=0, ysize=0, mines=0, randSeed=None):
         self._board = MSBoard(

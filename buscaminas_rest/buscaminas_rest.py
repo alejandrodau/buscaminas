@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
 
-from buscaminas import Minesweeper, GameOverException,\
+from buscaminas import Buscaminas, GameOverException,\
                        VictoryException, InvalidOperationException
 from .gamestore import GameIdNotFound, gameStoreFactory
 from .userdb import UserDB
@@ -38,7 +38,7 @@ def reset_state(gameId, xsize, ysize, mines, seed):
     ''' used to create a predictable environment for tests '''
     global gameStore
     gameStore = gameStoreFactory(type='memory')
-    game = Minesweeper(xsize, ysize, mines, seed)
+    game = Buscaminas(xsize, ysize, mines, seed)
     gameStore.put(gameId, game)
 
 
@@ -172,7 +172,7 @@ def newGame():
     xsize = int(request.values.get('xsize'))
     ysize = int(request.values.get('ysize'))
     mines = int(request.values.get('mines'))
-    game = Minesweeper(xsize, ysize, mines)
+    game = Buscaminas(xsize, ysize, mines)
     return jsonify(gameId=gameStore.new(game))
 
 

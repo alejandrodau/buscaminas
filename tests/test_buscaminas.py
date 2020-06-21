@@ -1,6 +1,6 @@
 import pytest
 import itertools
-from buscaminas import Minesweeper, GameOverException,\
+from buscaminas import Buscaminas, GameOverException,\
                        VictoryException, InvalidOperationException
 from buscaminas.cellcode import COVERED, BLANK, FLAG, QUESTION
 
@@ -12,7 +12,7 @@ mines = 3
 
 @pytest.fixture
 def game():
-    return Minesweeper(xsize=xsize, ysize=ysize, mines=mines, randSeed=1)
+    return Buscaminas(xsize=xsize, ysize=ysize, mines=mines, randSeed=1)
 
 
 def test_newGame(game):
