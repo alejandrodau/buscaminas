@@ -88,7 +88,6 @@ class Minesweeper():
         if cell.hasFlag:
             cell.removeFlag()
             self._flagCount -= 1
-            self.checkVictory()
 
     def removeQuestionMark(self, x, y):
         self._board.cell(x, y).removeQuestionMark()
