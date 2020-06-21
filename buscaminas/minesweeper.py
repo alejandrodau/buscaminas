@@ -4,13 +4,16 @@ from . import cellcode
 import itertools
 
 
-class InvalidOperationException(Exception): pass
+class InvalidOperationException(Exception):
+    pass
 
 
-class VictoryException(Exception): pass
+class VictoryException(Exception):
+    pass
 
 
-class GameOverException(Exception): pass
+class GameOverException(Exception):
+    pass
 
 
 class Minesweeper():
@@ -21,6 +24,7 @@ class Minesweeper():
         self._mines = mines
         self._boardSize = xsize * ysize
         self._isOver = False
+        self._isWin = False
         self._flagCount = 0
         self._uncoveredCount = 0
 
@@ -28,6 +32,11 @@ class Minesweeper():
     def isOver(self):
         """ is the game over? """
         return self._isOver
+
+    @property
+    def isWin(self):
+        """ has victory happened? """
+        return self._isWin
 
     def getVisibleBoard(self):
         """ get a coded representation of the current board """
@@ -70,6 +79,8 @@ class Minesweeper():
         if self._flagCount == self._mines and \
            self._uncoveredCount + self._flagCount == self._boardSize:
             self._uncoverBoard()
+            self._isOver = True
+            self._isWin = True
             raise VictoryException()
 
     def removeFlag(self, x, y):

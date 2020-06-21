@@ -22,16 +22,16 @@ def client():
         yield client
 
 
-def putAndGetBoard(route):
+def putAndGetBoard(client, route):
     return client.put(route).get_json()['board']
 
 
-def getBoard(gameId):
+def getBoard(client, gameId):
     return client.get(f'/board/{gameId}').get_json()['board']
 
 
 def test_newGame(client):
-    rv = client.post(f'/newGame?xsize={xsize}&ysize&{ysize}&mines={mines}')
+    rv = client.post(f'/newGame?xsize={xsize}&ysize={ysize}&mines={mines}')
     data = rv.get_json()
     newGameId = data['gameId']
     assert gameId is not None
@@ -45,29 +45,29 @@ def test_newGame(client):
 
 
 def test_uncover(client):
-    board = getBoard(gameId)
+    board = getBoard(client, gameId)
     for cell in itertools.chain.from_iterable(board):
         assert cell == COVERED
-    board = putAndGetBoard(f'/board/{gameId}/uncover?x=0&y=0')
+    board = putAndGetBoard(client, f'/board/{gameId}/uncover?x=0&y=0')
     assert board[0][0] == BLANK
 
 
 def test_putFlag(client):
-    board = getBoard(gameId)
+    board = getBoard(client, gameId)
     assert board[0][0] != FLAG
-    board = putAndGetBoard(f'/board/{gameId}/flag?x=0&y=0')
+    board = putAndGetBoard(client, f'/board/{gameId}/flag?x=0&y=0')
     assert board[0][0] == FLAG
 
 
 def test_putQuestionMark(client):
-    board = getBoard(f'/board/{gameId}')
+    board = getBoard(client, gameId)
     assert board[0][0] != QUESTION
-    board = putAndGetBoard(f'/board/{gameId}/question?x=0&y=0')
+    board = putAndGetBoard(client, f'/board/{gameId}/question?x=0&y=0')
     assert board[0][0] == QUESTION
 
 
 def test_removeFlag(client):
-    board = putAndGetBoard(f'/board/{gameId}/flag?x=0&y=0')
+    board = putAndGetBoard(client, f'/board/{gameId}/flag?x=0&y=0')
     assert board[0][0] == FLAG
     rv = client.delete(f'/board/{gameId}/flag?x=0&y=0')
     board = rv.get_json()['board']
@@ -75,7 +75,7 @@ def test_removeFlag(client):
 
 
 def test_removeQuestion(client):
-    board = putAndGetBoard(f'/board/{gameId}/question?x=0&y=0')
+    board = putAndGetBoard(client, f'/board/{gameId}/question?x=0&y=0')
     assert board[0][0] == QUESTION
     rv = client.delete(f'/board/{gameId}/question?x=0&y=0')
     board = rv.get_json()['board']
@@ -92,11 +92,11 @@ def test_gameOver(client):
 def test_victory(client):
     rv = client.put(f'/board/{gameId}/uncover?x=0&y=0')
     assert rv.get_json()['status'] == 'active'
-    rv = client.put(f'/board/{gameId}/uncover?x=0&y=2')
+    rv = client.put(f'/board/{gameId}/flag?x=0&y=2')
     assert rv.get_json()['status'] == 'active'
-    rv = client.put(f'/board/{gameId}/uncover?x=0&y=3')
+    rv = client.put(f'/board/{gameId}/flag?x=0&y=3')
     assert rv.get_json()['status'] == 'active'
-    rv = client.put(f'/board/{gameId}/uncover?x=1&y=4')
+    rv = client.put(f'/board/{gameId}/flag?x=1&y=4')
     assert rv.get_json()['status'] == 'active'
     rv = client.put(f'/board/{gameId}/uncover?x=0&y=4')
     assert rv.get_json()['status'] == 'victory'
@@ -105,9 +105,9 @@ def test_victory(client):
 def test_invalidOperation(client):
     rv = client.put(f'/board/{gameId}/uncover?x=0&y=0')
     rv = client.put(f'/board/{gameId}/flag?x=0&y=0')
-    assert rv.get_json()['error']['errorCode'] == 'invalidOperation'
+    assert rv.get_json()['error']['errorCode'] == 'InvalidOperation'
 
 
-def test_invalidParameter(client):
+def test_indexError(client):
     rv = client.put(f'/board/{gameId}/uncover?x=100&y=0')
-    assert rv.get_json()['error']['errorCode'] == 'invalidParameter'
+    assert rv.get_json()['error']['errorCode'] == 'IndexError'

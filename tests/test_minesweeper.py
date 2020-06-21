@@ -26,6 +26,7 @@ def test_explodes(game):
     with pytest.raises(GameOverException):
         game.uncover(0, 2)
     assert game.isOver
+    assert not game.isWin
     checkBoardIsCleared(game)
 
 
@@ -56,6 +57,7 @@ def test_victory(game):
     with pytest.raises(VictoryException):
         game.uncover(0, 4)
     checkBoardIsCleared(game)
+    assert game.isWin
 
 
 def test_victoryFlag(game):
@@ -69,6 +71,7 @@ def test_victoryFlag(game):
     with pytest.raises(VictoryException):
         game.putFlag(0, 2)
     checkBoardIsCleared(game)
+    assert game.isWin
 
 
 def test_invalidOpsFlag(game):
