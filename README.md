@@ -3,13 +3,24 @@
 Basic implementation of a Minesweeper game, to play with python3 and flask
 
 ## Installation
-(TODO)
+* Clone the repository
+* Create virtualenv and install flask:
+```
+$ virtualenv -p python3 venv
+$ . venv/bin/activate
+$ pip install -r requirements.txt
+```
+* Start flask server
+```
+$ ./app.sh
+```
 
-## Sample usage:
+## Buscaminas game module
+This project provides the module "buscaminas" that you can use to play the game from a python code or a python cli, like this:
 
 ```
 >>> import buscaminas
->>> game = buscaminas.Minesweeper(5, 5, 3, 1)
+>>> game = buscaminas.Buscaminas(5, 5, 3, 1)
 >>> pprint(game.getVisibleBoard())
 [['.', '.', '.', '.', '.'],
  ['.', '.', '.', '.', '.'],
@@ -36,11 +47,11 @@ Basic implementation of a Minesweeper game, to play with python3 and flask
 >>> game.uncover(0,4)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/home/avd/src/buscaminas/buscaminas/minesweeper.py", line 87, in uncover
+  File "/home/avd/src/buscaminas/buscaminas/buscaminas.py", line 87, in uncover
     self.checkVictory()
-  File "/home/avd/src/buscaminas/buscaminas/minesweeper.py", line 73, in checkVictory
+  File "/home/avd/src/buscaminas/buscaminas/buscaminas.py", line 73, in checkVictory
     raise VictoryException()
-buscaminas.minesweeper.VictoryException
+buscaminas.buscaminas.VictoryException
 >>> pprint(game.getVisibleBoard())
 [[' ', 1, '*', '*', 2],
  [' ', 1, 2, 3, '*'],

@@ -73,7 +73,8 @@ def board(gameId):
             ".": covered cell
             "F": flagged covered cell
             "?": covered cell with a question mark:
-            0-8: uncovered cell with n neighboring mines
+            " ": uncovered cell without mines in its neighboring cells
+            1-8: uncovered cell with n neighboring mines
             "*": mine (shown once the game is finished)
     '''
     game = gameStore.get(gameId)
