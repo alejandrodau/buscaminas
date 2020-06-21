@@ -57,6 +57,7 @@ def test_victory(game):
         game.uncover(0, 4)
     checkBoardIsCleared(game)
 
+
 def test_victoryFlag(game):
     game.uncover(0, 0)
     game.putFlag(0, 2)
