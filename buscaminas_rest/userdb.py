@@ -20,7 +20,7 @@ class UserDB():
         return userToken
 
     def _getHashedPassword(self, passwd):
-        return hashlib.sha224(bytes('NaCl' + passwd)).hexdigest()
+        return hashlib.sha224(bytes('NaCl' + passwd, 'utf-8')).hexdigest()
 
     def _getNewToken(self, user):
         userToken = str(uuid.uuid4())

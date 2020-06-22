@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 from buscaminas import Buscaminas, GameOverException,\
                        VictoryException, InvalidOperationException
 from .gamestore import GameIdNotFound, gameStoreFactory
-from .userdb import UserDB
+from .userdb import UserDB, UserAlreadyExists
 
 
 app = Flask(__name__)
@@ -16,22 +16,31 @@ userDB = UserDB()
 
 @app.errorhandler(IndexError)
 def indexError_handler(error):
-    return jsonify(error={'errorCode': 'IndexError'}), 400
+    return _errorCode('IndexError')
 
 
 @app.errorhandler(InvalidOperationException)
 def invalidOperationError_handler(error):
-    return jsonify(error={'errorCode': 'InvalidOperation'}), 400
+    return _errorCode('InvalidOperation')
 
 
 @app.errorhandler(KeyError)
 def keyError_handler(error):
-    return jsonify(error={'errorCode': 'InvalidParameter'}), 400
+    return _errorCode('InvalidParameter')
 
 
 @app.errorhandler(GameIdNotFound)
 def gameIdNotFoundError_handler(error):
-    return jsonify(error={'errorCode': 'GameIdNotFound'}), 400
+    return _errorCode('GameIdNotFound')
+
+
+@app.errorhandler(UserAlreadyExists)
+def userAlreadyExists_handler(error):
+    return _errorCode('UserAlreadyExists')
+
+
+def _errorCode(errorCode):
+    return jsonify(error={'errorCode': errorCode}), 400
 
 
 def reset_state(gameId, xsize, ysize, mines, seed):
@@ -182,7 +191,12 @@ def newGame():
 # ------------------------------
 @app.route('/user/add', methods=['POST'])
 def addUser():
-    ''' add user/passwd and return a session token '''
+    '''
+    Add user/passwd and return a session token
+    parameters:
+        user
+        passwd
+    '''
     # TODO: mock implementation - do error handling
     user = request.form['user']
     passwd = request.form['passwd']
@@ -192,7 +206,12 @@ def addUser():
 
 @app.route('/user/login', methods=['POST'])
 def login():
-    ''' get a session token '''
+    '''
+    Get a session token
+    parameters:
+        user
+        passwd
+    '''
     # TODO: mock implementation - do error handling
     user = request.form['user']
     passwd = request.form['passwd']
@@ -202,14 +221,18 @@ def login():
 
 @app.route('/user/logout', methods=['POST'])
 def logout():
-    ''' invalidate current session token '''
+    '''
+    Invalidate current session token
+    '''
     userDB.logout(_getToken())
     return jsonify()
 
 
 @app.route('/user/gameList', methods=['GET'])
 def getGameList():
-    ''' return the list of games for current user '''
+    '''
+    Return the list of games for current user
+    '''
     return jsonify(gameList=userDB.getGameList(_getToken()))
 
 
