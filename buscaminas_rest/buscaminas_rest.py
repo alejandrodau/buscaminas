@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from flask import Flask, jsonify, request
 
 
@@ -72,6 +73,19 @@ def buscaminas_api():
     return 'Hello, this is the buscaminas api!'
 
 
+def _game_status_response(game):
+    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+
+
+@contextmanager
+def stored_game(gameId):
+    game = gameStore.get(gameId)
+    try:
+        yield game
+    finally:
+        gameStore.put(gameId, game)
+
+
 @app.route('/board/<gameId>', methods=['GET'])
 def board(gameId):
     '''
@@ -86,8 +100,8 @@ def board(gameId):
             1-8: uncovered cell with n neighboring mines
             "*": mine (shown once the game is finished)
     '''
-    game = gameStore.get(gameId)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        return _game_status_response(game)
 
 
 @app.route('/board/<gameId>/uncover', methods=['PUT'])
@@ -97,16 +111,15 @@ def uncover(gameId):
     parameters:
         x, y: cell position
     '''
-    game = gameStore.get(gameId)
-    try:
-        x, y = _getCoords(request.values)
-        game.uncover(x, y)
-    except GameOverException:
-        pass
-    except VictoryException:
-        pass
-    gameStore.put(gameId, game)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        try:
+            x, y = _getCoords(request.values)
+            game.uncover(x, y)
+        except GameOverException:
+            pass
+        except VictoryException:
+            pass
+        return _game_status_response(game)
 
 
 @app.route('/board/<gameId>/flag', methods=['PUT'])
@@ -116,16 +129,15 @@ def flag(gameId):
     parameters:
         x, y: flag position
     '''
-    game = gameStore.get(gameId)
-    try:
-        x, y = _getCoords(request.values)
-        game.putFlag(x, y)
-    except GameOverException:
-        pass
-    except VictoryException:
-        pass
-    gameStore.put(gameId, game)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        try:
+            x, y = _getCoords(request.values)
+            game.putFlag(x, y)
+        except GameOverException:
+            pass
+        except VictoryException:
+            pass
+        return _game_status_response(game)
 
 
 @app.route('/board/<gameId>/question', methods=['PUT'])
@@ -135,11 +147,10 @@ def question(gameId):
     parameters:
         x, y: question mark position
     '''
-    game = gameStore.get(gameId)
-    x, y = _getCoords(request.values)
-    game.putQuestionMark(x, y)
-    gameStore.put(gameId, game)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        x, y = _getCoords(request.values)
+        game.putQuestionMark(x, y)
+        return _game_status_response(game)
 
 
 @app.route('/board/<gameId>/question', methods=['DELETE'])
@@ -149,11 +160,10 @@ def question_delete(gameId):
     parameters:
         x, y: question mark position
     '''
-    game = gameStore.get(gameId)
-    x, y = _getCoords(request.values)
-    game.removeQuestionMark(x, y)
-    gameStore.put(gameId, game)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        x, y = _getCoords(request.values)
+        game.removeQuestionMark(x, y)
+        return _game_status_response(game)
 
 
 @app.route('/board/<gameId>/flag', methods=['DELETE'])
@@ -163,11 +173,10 @@ def flag_delete(gameId):
     parameters:
         x, y: flag position
     '''
-    game = gameStore.get(gameId)
-    x, y = _getCoords(request.values)
-    game.removeFlag(x, y)
-    gameStore.put(gameId, game)
-    return jsonify(status=_getStatusCode(game), board=game.getVisibleBoard())
+    with stored_game(gameId) as game:
+        x, y = _getCoords(request.values)
+        game.removeFlag(x, y)
+        return _game_status_response(game)
 
 
 @app.route('/newGame', methods=['POST'])
