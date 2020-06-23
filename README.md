@@ -135,6 +135,19 @@ If one of the APIs has an error processing a request because of a bad or missing
 ## Demo server
 A demo server is running in http://buscaminas.hopto.org:5555/
 
+## Buscaminas client library
+A client library to play the game using the rest api. Sample usage:
+
+```
+>>> from buscaminas_rest_client import BuscaminasClient
+>>> cl = BuscaminasClient('http://buscaminas.hopto.org:5555/')
+>>> cl.addUser('test', 'pass') # this will automatically login the session
+>>> gameId = cl.newGame(3, 4, 2)
+>>> cl.getBoard(gameId)
+{'board': [['.', '.', '.', '.'], ['.', '.', '.', '.'], ['.', '.', '.', '.']], 'status': 'active'}
+>>> 
+
+```
 ## Buscaminas game module
 This project provides the module "buscaminas" that you can use to play the game from a python code or a python cli, like this:
 

@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 from buscaminas import Buscaminas, GameOverException,\
                        VictoryException, InvalidOperationException
 from .gamestore import GameIdNotFound, gameStoreFactory
-from .userdb import UserDB, UserAlreadyExists
+from .userdb import UserDB, UserAlreadyExists, BadUserOrPass
 
 
 app = Flask(__name__)
@@ -23,6 +23,11 @@ def indexError_handler(error):
 @app.errorhandler(InvalidOperationException)
 def invalidOperationError_handler(error):
     return _errorCode('InvalidOperation')
+
+
+@app.errorhandler(BadUserOrPass)
+def badUserError_handler(error):
+    return _errorCode('BadUserOrPass')
 
 
 @app.errorhandler(KeyError)

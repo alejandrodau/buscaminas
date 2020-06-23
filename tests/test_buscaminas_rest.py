@@ -111,3 +111,6 @@ def test_invalidOperation(client):
 def test_indexError(client):
     rv = client.put(f'/board/{gameId}/uncover?x=100&y=0')
     assert rv.get_json()['error']['errorCode'] == 'IndexError'
+
+
+# TODO: Test user and session management!!
