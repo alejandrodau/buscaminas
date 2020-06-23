@@ -126,10 +126,11 @@ $ curl -H "Authorization: ad4b38da-de85-4b8b-a1fe-d7aae50d2f20" http://127.0.0.1
 
 ## Error codes
 If one of the APIs has an error processing a request because of a bad or missing parameter, it will return http error 400, and an structure like `{"error":{"errorCode":<errorCode>}}`, where errorCode can be:
-	* InvalidOperation: when trying to flag an uncovered cell, for example
-	* InvalidParameter: missing parameter or value out of range
-	* GameIdNotFound: when refering to a gameId that is missing or not belinging to the user
-	* UserAlreadyExists: when trying to create a username that already exists
+
+* InvalidOperation: when trying to flag an uncovered cell, for example
+* InvalidParameter: missing parameter or value out of range
+* GameIdNotFound: when refering to a gameId that is missing or not belinging to the user
+* UserAlreadyExists: when trying to create a username that already exists
 
 ## Demo server
 A demo server is running in http://buscaminas.hopto.org:5555/
