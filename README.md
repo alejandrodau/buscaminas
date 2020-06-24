@@ -145,8 +145,58 @@ A client library to play the game using the rest api. Sample usage:
 >>> gameId = cl.newGame(3, 4, 2)
 >>> cl.getBoard(gameId)
 {'board': [['.', '.', '.', '.'], ['.', '.', '.', '.'], ['.', '.', '.', '.']], 'status': 'active'}
->>> 
+>>> def boardPrint(response):
+...    for v in response['board']: print('\t'.join(v))
+...    print("status: ", response['status'])
+... 
+>>> boardPrint(cl.uncover(gameId,0,0))
+1   .   .   .
+.   .   .   .
+.   .   .   .
+status:  active
+>>> boardPrint(cl.uncover(gameId,0,1))
+1   1   .   .
+.   .   .   .
+.   .   .   .
+status:  active
+>>> boardPrint(cl.uncover(gameId,1,1))
+1   1   2   *
+1   *   2   1
+1   1   1    
+status:  gameOver
 
+>>> gameId = cl.newGame(4, 4, 2)
+>>> boardPrint(cl.uncover(gameId,0,0))
+             
+2   2   1    
+.   .   1    
+.   .   1    
+status:  active
+>>> boardPrint(cl.flag(gameId,2,1))
+             
+2   2   1    
+.   F   1    
+.   .   1    
+status:  active
+>>> boardPrint(cl.flag(gameId,2,0))
+             
+2   2   1    
+F   F   1    
+.   .   1    
+status:  active
+>>> boardPrint(cl.uncover(gameId,3,0))
+             
+2   2   1    
+F   F   1    
+2   .   1    
+status:  active
+>>> boardPrint(cl.uncover(gameId,3,1))
+             
+2   2   1    
+*   *   1    
+2   2   1    
+status:  victory
+>>> 
 ```
 ## Buscaminas game module
 This project provides the module "buscaminas" that you can use to play the game from a python code or a python cli, like this:
