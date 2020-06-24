@@ -41,9 +41,9 @@ def checkBoardIsCleared(game):
 def test_autoUncover(game):
     game.uncover(0, 0)
     board = game.getVisibleBoard()
-    assert board[0] == [BLANK, 1, COVERED, COVERED, COVERED]
-    assert board[1] == [BLANK, 1, 2, 3, COVERED]
-    assert board[2] == [BLANK, BLANK, BLANK, 1, 1]
+    assert board[0] == [BLANK, '1', COVERED, COVERED, COVERED]
+    assert board[1] == [BLANK, '1', '2', '3', COVERED]
+    assert board[2] == [BLANK, BLANK, BLANK, '1', '1']
     assert board[3] == [BLANK, BLANK, BLANK, BLANK, BLANK]
     assert board[4] == [BLANK, BLANK, BLANK, BLANK, BLANK]
 

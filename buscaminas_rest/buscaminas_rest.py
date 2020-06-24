@@ -252,3 +252,8 @@ def getGameList():
 
 def _getToken():
     return request.headers.get('Authorization')
+
+
+'''
+# TODO. Implement game list
+'''

@@ -113,4 +113,6 @@ def test_indexError(client):
     assert rv.get_json()['error']['errorCode'] == 'IndexError'
 
 
-# TODO: Test user and session management!!
+'''
+# TODO. User and session management!!
+'''

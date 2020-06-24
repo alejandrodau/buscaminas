@@ -38,3 +38,27 @@ class BuscaminasClient():
                           data={'xsize': xsize, 'ysize': ysize, 'mines': mines})
         if self._validResponse(r):
             return r.json()['gameId']
+
+    def uncover(self, gameId, x, y):
+        r = requests.put(self._url + '/board/' + gameId + '/uncover',
+                          headers={'Authorization': self._sessionToken},
+                          data={'x': x, 'y': y})
+        if self._validResponse(r):
+            return r.json()
+
+    def flag(self, gameId, x, y):
+        r = requests.put(self._url + '/board/' + gameId + '/flag',
+                          headers={'Authorization': self._sessionToken},
+                          data={'x': x, 'y': y})
+        if self._validResponse(r):
+            return r.json()
+
+'''
+# TODO. Implement client methods for:
+* remove flag
+* add/remove question marks
+* logout
+* gameList
+* Improve error handling
+* Remove redundance in url construction and response validation
+'''

@@ -7,7 +7,7 @@ BLANK = ' '
 
 
 def count(number):
-    return number if number > 0 else BLANK
+    return str(number) if number > 0 else BLANK
 
 
 def decode_count(code):
